@@ -1,0 +1,11 @@
+#buttonOne {
+  -fx-background-color: #FF2E63;
+  -fx-text-fill: #EAEAEA;
+}
+
+#buttonOne:hover {
+  -fx-background-color: #EAEAEA;
+  -fx-text-fill:  #FF2E63;
+}
+
+
