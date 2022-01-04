@@ -17,83 +17,90 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class loggedInController implements Initializable {
     @FXML
     private Button bttSignOut;
 
     @FXML
-    private TableView<Movie> movieTableView;
-
+    private TableView<MovieSearchModel> movieTableView;
     @FXML
-    private TableColumn<Movie, Integer> anio;
-
+    private TableColumn<MovieSearchModel, Integer> idTableColumn;
     @FXML
-    private TableColumn<Movie, String> clasificacion;
-
+    private TableColumn<MovieSearchModel, String> tituloTableColumn;
     @FXML
-    private TableColumn<Movie, Integer> disponibles;
-
+    private TableColumn<MovieSearchModel, Integer> anioTableColumn;
     @FXML
-    private TableColumn<Movie, Integer> estrellas;
-
+    private TableColumn<MovieSearchModel, String> tipoPeliculaTableColumn;
     @FXML
-    private TableColumn<Movie, Integer> existencias;
-
+    private TableColumn<MovieSearchModel, String> clasificacionTableColumn;
     @FXML
-    private TableColumn<Movie, Integer> id;
-
+    private TableColumn<MovieSearchModel, Integer> existenciasTableColumn;
     @FXML
-    private TableColumn<Movie, String> tipoPelicula;
-
+    private TableColumn<MovieSearchModel, Integer> disponiblesTableColumn;
     @FXML
-    private TableColumn<Movie, String> titulo;
+    private TableColumn<MovieSearchModel, Integer> estrellasTableColumn;
 
-    ObservableList<Movie> movieObservableList = FXCollections.observableArrayList();
+    ObservableList<MovieSearchModel> movieSearchModelobservableList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        Connection connectDB = new SQLConnection().getDBConnection();
+        Connection connectDB = null;
 
-        String moviesViewQuery = "SELECT PeliculaID, Titulo, Anio, TipoPelicula, Clasificacion, CantidadEnExistencia, CopiasDisponible, nEstrellas FROM Peliculas";
+        String moviesViewQuery =
+                "SELECT P.PeliculaID, P.Titulo, P.Anio, T.TipoPelicula, C.Simbolo AS 'Clasificacion', P.CantidadEnExistencia, P.CopiasDisponible, P.nEstrellas\n" +
+                "FROM Peliculas AS P, ClasificacionPelicula AS C, TipoDePelicula AS T\n" +
+                "WHERE P.TipoPelicula = T.TipoID AND P.Clasificacion = C.ClasificacionID;";
 
-        try{
+        try {
+            connectDB = new SQLConnection().getDBConnection();
             Statement statement = connectDB.createStatement();
             ResultSet resultSet = statement.executeQuery(moviesViewQuery);
-
 
             while (resultSet.next()){
                 Integer queryPeliculaID = resultSet.getInt("PeliculaID");
                 String queryTitulo = resultSet.getString("Titulo");
                 Integer queryAnio = resultSet.getInt("Anio");
-                Integer queryTipoPelicula = resultSet.getInt("TipoPelicula");
-                Integer queryClasificacion = resultSet.getInt("CantidadEnExistencia");
-                Integer queryCantidadEnExistencia = resultSet.getInt("PeliculaID");
+                String queryTipoPelicula = resultSet.getString("TipoPelicula");
+                String queryClasificacion = resultSet.getString("Clasificacion");
+                Integer queryExistencia = resultSet.getInt("CantidadEnExistencia");
                 Integer queryCopiasDisponible = resultSet.getInt("CopiasDisponible");
-                Integer querynEstrellas = resultSet.getInt("nEstrellas");
+                Integer queryEstrellas = resultSet.getInt("nEstrellas");
 
-                movieObservableList.add(new Movie(queryPeliculaID, queryTitulo, queryAnio, queryTipoPelicula, queryClasificacion, queryCantidadEnExistencia, queryCopiasDisponible, querynEstrellas));
+                // Populate the Obsevable list
+                movieSearchModelobservableList.add(new MovieSearchModel(queryPeliculaID, queryTitulo, queryAnio, queryTipoPelicula, queryClasificacion, queryExistencia, queryCopiasDisponible, queryEstrellas));
             }
 
-            id.setCellValueFactory(new PropertyValueFactory<>("peliculaID"));
-            titulo.setCellValueFactory(new PropertyValueFactory<>("tituloPelicula"));
-            anio.setCellValueFactory(new PropertyValueFactory<>("anioPelicula"));
-            tipoPelicula.setCellValueFactory(new PropertyValueFactory<>("tipoPelicula"));
-            clasificacion.setCellValueFactory(new PropertyValueFactory<>("clasificacion"));
-            existencias.setCellValueFactory(new PropertyValueFactory<>("cantidadEnExistencia"));
-            disponibles.setCellValueFactory(new PropertyValueFactory<>("copiasDisponible"));
-            estrellas.setCellValueFactory(new PropertyValueFactory<>("nEstrellas"));
-            titulo.setCellValueFactory(new PropertyValueFactory<>("tituloPelicula"));
+
+            //
+            idTableColumn.setCellValueFactory(new PropertyValueFactory<>("peliculaID"));
+            tituloTableColumn.setCellValueFactory(new PropertyValueFactory<>("tituloPelicula"));
+            anioTableColumn.setCellValueFactory(new PropertyValueFactory<>("anioPelicula"));
+            tipoPeliculaTableColumn.setCellValueFactory(new PropertyValueFactory<>("tipoPelicula"));
+            clasificacionTableColumn.setCellValueFactory(new PropertyValueFactory<>("clasificacionPelicula"));
+            existenciasTableColumn.setCellValueFactory(new PropertyValueFactory<>("enExistencia"));
+            disponiblesTableColumn.setCellValueFactory(new PropertyValueFactory<>("copiasDisponibles"));
+            estrellasTableColumn.setCellValueFactory(new PropertyValueFactory<>("estrellas"));
 
 
-            movieTableView.setItems(movieObservableList);
+            movieTableView.setItems(movieSearchModelobservableList);
 
-
-
-        }catch (SQLException e){
+        } catch (SQLException e){
+            Logger.getLogger(MovieSearchModel.class.getName()).log(Level.SEVERE, null, e);
             e.printStackTrace();
+        } finally {
+            if (connectDB != null){
+                try{
+                    connectDB.close();
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
         }
+
 
 
         bttSignOut.setOnAction(new EventHandler<ActionEvent>() {

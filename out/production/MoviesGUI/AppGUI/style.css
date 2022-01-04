@@ -9,3 +9,69 @@
 }
 
 
+.table-view{
+  -fx-background-color: white;
+}
+
+.table-view .column-header-background .filler {
+  -fx-background-color: transparent;
+}
+
+
+.table-view .corner {
+  -fx-background-color: transparent;
+}
+/* .table-view .column-header {
+  -fx-background-color: transparent;
+
+}
+
+.table-view .column-header-background{
+  -fx-background-color: #14FFEC;
+  -fx-background-radius: 7px 7px 0px 0px;
+  -fx-padding: 0 0 5px 0;
+} */
+
+.table-cell {     
+  -fx-padding: 0.5em 0.5em 0.1em 0.3em;
+  -fx-border-color: -fx-box-border -fx-box-border transparent transparent;  
+  -fx-font: 13px "Segoe UI";    
+  -fx-border-insets: 0;
+}
+
+.table-view .table-cell{
+  -fx-padding: 2 0 2 10px;
+}
+
+.table-row-cell:hover {
+  -fx-background-color: #93f9b911;
+  -fx-text-background-color: #FF2E63;
+}
+.table-row-cell:odd{
+  -fx-background-color: #C9D6DF;
+  -fx-background-insets: 0, 0 0 1 0;
+  -fx-padding: 0.0em;
+}
+.table-row-cell:even{
+  -fx-background-color: #F0F5F9;
+  -fx-background-insets: 0, 0 0 1 0;
+  -fx-padding: 0.0em;
+}
+
+.table-row-cell:empty .table-cell {
+  -fx-border-width: 0px;
+}
+
+
+.table-view:row-selection .table-row-cell:filled:hover { 
+  -fx-background-color: #393E46;
+}
+
+.table-view:row-selection .table-row-cell:filled:selected { 
+  -fx-background-color: #393E46;
+}
+
+.table-view .column-header .label{
+  -fx-text-fill: #222831;
+  -fx-alignment: CENTER;
+}
