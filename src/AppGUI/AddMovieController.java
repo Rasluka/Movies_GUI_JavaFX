@@ -1,2 +1,4 @@
-package AppGUI;public class AddMovieController {
+package AppGUI;
+
+public class AddMovieController {
 }
